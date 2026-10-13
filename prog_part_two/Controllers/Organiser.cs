@@ -33,5 +33,13 @@ namespace prog_part_two.Controllers
             Organisers.OrganiserNumber = updated.OrganiserNumber;
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteById(int Id)
+        {
+            organiser.RemoveAll(organiser => organiser.Id == Id);
+            return NoContent();
+        }
+
     }
 }
