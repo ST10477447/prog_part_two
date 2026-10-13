@@ -15,6 +15,11 @@ namespace prog_part_two.Controllers
         [HttpGet]
         public IActionResult GetAll() => Ok(organiser);
 
-
+        [HttpGet("{id}")]
+        public IActionResult GetById(int Id)
+        {
+            var Organisers = organiser.FirstOrDefault(organiser => organiser.Id == Id);
+            return Organisers is not null ? Ok(Organisers) : NotFound();
+        }
     }
 }
