@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 
 namespace prog_part_two.Controllers
 {
@@ -7,5 +8,14 @@ namespace prog_part_two.Controllers
     [ApiController]
     public class Participant : ControllerBase
     {
+        private static List<Participants> participant = new()
+        {
+        };
+
+        [HttpGet]
+        private IActionResult GetAll() => Ok(participant);
+
+
+
     }
 }
