@@ -43,5 +43,35 @@ namespace prog_part_two.Controllers
             participant.RemoveAll(participant => participant.Id == Id);
             return NoContent();
         }
+
+        [HttpPost]
+        public string store_participantInfo(string ParticipantName, string ParticipantSurname, int ParticipantAge, string ParticipantEmail, int ParticipantNumber, string ParticipantGender)
+        {
+            string message = "";
+
+            try
+            {
+                string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+
+                SqlConnection connect = new SqlConnection(connection_string);
+
+                connect.Open();
+
+                string query = @"insert into Participant values ('" + ParticipantName + "', '" + ParticipantSurname + "', '" + ParticipantAge + "' ,'" + ParticipantEmail + "', '" + ParticipantNumber + "', '" + ParticipantGender + "')";
+
+                SqlCommand run_query = new SqlCommand(query, connect);
+
+                run_query.ExecuteNonQuery();
+
+                message = "Participant info saved successfully";
+
+                connect.Close();
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+            return message;
+        }
     }
 }
