@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 using prog_part_two.Models;
 
 namespace prog_part_two.Controllers
@@ -41,5 +42,34 @@ namespace prog_part_two.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, int OrganiserAge, string OrganiserEmail, int OrganiserNumber)
+        {
+            string message = "";
+
+            try
+            {
+                string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+
+                SqlConnection connect = new SqlConnection(connection_string);
+
+                connect.Open();
+
+                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserAge + "' ,'" + OrganiserEmail + "', '" + OrganiserNumber + "')";
+
+                SqlCommand run_query = new SqlCommand(query, connect);
+
+                run_query.ExecuteNonQuery();
+
+                message = "Organiser info saved successfully";
+
+                connect.Close();
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+            return message;
+        }
     }
 }
