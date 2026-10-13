@@ -19,8 +19,8 @@ namespace prog_part_two.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int Id)
         {
-            var Categories = category.FirstOrDefault(category => category.Id == Id);
-            return Categories is not null ? Ok(Categories) : NotFound();
+            var Category = category.FirstOrDefault(category => category.Id == Id);
+            return Category is not null ? Ok(Category) : NotFound();
         }
 
         [HttpPut]
