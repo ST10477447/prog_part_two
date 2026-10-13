@@ -22,5 +22,19 @@ namespace prog_part_two.Controllers
             var Participants = participant.FirstOrDefault(participant => participant.Id == Id);
             return Participants is not null ? Ok(Participants) : NotFound();
         }
+
+        [HttpPut]
+        public IActionResult UpdateById(int Id, Participants updated)
+        {
+            var Participants = participant.FirstOrDefault(participant => participant.Id == Id);
+            if (Participants is null) return NotFound();
+            Participants.ParticipantName = updated.ParticipantName;
+            Participants.ParticipantSurname = updated.ParticipantSurname;
+            Participants.ParticipantAge = updated.ParticipantAge;
+            Participants.ParticipantEmail = updated.ParticipantEmail;
+            Participants.ParticipantNumber = updated.ParticipantNumber;
+            Participants.ParticipantGender = updated.ParticipantGender;
+            return NoContent();
+        }
     }
 }
