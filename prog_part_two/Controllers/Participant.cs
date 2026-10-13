@@ -36,5 +36,12 @@ namespace prog_part_two.Controllers
             Participants.ParticipantGender = updated.ParticipantGender;
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteById(int Id)
+        {
+            participant.RemoveAll(participant => participant.Id == Id);
+            return NoContent();
+        }
     }
 }
