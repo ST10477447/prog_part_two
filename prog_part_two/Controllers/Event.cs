@@ -45,5 +45,41 @@ namespace prog_part_two.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        public string Events(int EventId, string EventName, string EventDate, string EventLocation, string EventDescription, int OrganiserId, int ParticipantId)
+        {
+            string message = "";
+
+            try
+            {
+                string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+                using SqlConnection connect = new SqlConnection(connection_string);
+
+                connect.Open();
+
+                string query = @"INSERT INTO Events (EventId, EventName, EventDate, EventLocation, EventDescription, OrganiserId, ParticipantId)
+                         VALUES (@EventId, @EventName, @EventDate, @EventLocation, @EventDescription, @OrganiserId, @ParticipantId)";
+
+                SqlCommand run_query = new SqlCommand(query, connect);
+
+                // Use parameters to avoid SQL injection
+                run_query.Parameters.AddWithValue("@EventId", EventId);
+                run_query.Parameters.AddWithValue("@EventName", EventName);
+                run_query.Parameters.AddWithValue("@EventDate", EventDate);
+                run_query.Parameters.AddWithValue("@EventLocation", EventLocation);
+                run_query.Parameters.AddWithValue("@EventDescription", EventDescription);
+                run_query.Parameters.AddWithValue("@OrganiserId", OrganiserId);
+                run_query.Parameters.AddWithValue("@ParticipantId", ParticipantId);
+
+                run_query.ExecuteNonQuery();
+
+                message = "Event saved successfully";
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+            return message;
+        }
     }
 }
