@@ -8,5 +8,10 @@ namespace prog_part_two.Controllers
     [ApiController]
     public class Organisers : ControllerBase
     {
+        private static List<Organisers> organiser = new()
+        {
+        };
+
+
     }
 }
