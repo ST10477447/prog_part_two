@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using prog_part_two.Models;
 using System.Data.SqlClient;
@@ -46,6 +47,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Organiser")]
         public string Events(int EventId, string EventName, string EventDate, string EventLocation, string EventDescription, int OrganiserId, int ParticipantId)
         {
             string message = "";
