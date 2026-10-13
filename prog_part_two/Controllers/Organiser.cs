@@ -71,5 +71,33 @@ namespace prog_part_two.Controllers
             }
             return message;
         }
+
+        [HttpPost("store_participant")]
+        public IActionResult StoreParticipantInfo(string name, string email, int organiserId)
+        {
+            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+            string query = "INSERT INTO Participant (ParticipantName, ParticipantEmail, OrganiserId) VALUES (@Name, @Email, @OrganiserId)";
+
+            try
+            {
+                using (SqlConnection connect = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand runQuery = new SqlCommand(query, connect))
+                    {
+                        runQuery.Parameters.AddWithValue("@Name", name);
+                        runQuery.Parameters.AddWithValue("@Email", email);
+                        runQuery.Parameters.AddWithValue("@OrganiserId", organiserId); // Links participant to organiser
+
+                        connect.Open();
+                        runQuery.ExecuteNonQuery();
+                    }
+                }
+                return Ok(new { message = "Participant linked to Organiser successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 }
