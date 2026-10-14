@@ -85,7 +85,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost("create_event")]
-        public IActionResult CreateEvent(string eventName, string eventDescription, int organiserId)
+        public IActionResult CreateEvent(string eventName, string eventDescription, string organiserName)
         {
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
 
@@ -102,7 +102,7 @@ namespace prog_part_two.Controllers
                     // Validate Organiser
                     using (SqlCommand checkCmd = new SqlCommand(checkQuery, connect))
                     {
-                        checkCmd.Parameters.AddWithValue("@OrganiserId", organiserId);
+                        checkCmd.Parameters.AddWithValue("@OrganiserName", organiserName);
                         int exists = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                         if (exists == 0)
@@ -114,7 +114,7 @@ namespace prog_part_two.Controllers
                     {
                         insertCmd.Parameters.AddWithValue("@EventName", eventName);
                         insertCmd.Parameters.AddWithValue("@EventDescription", eventDescription);
-                        insertCmd.Parameters.AddWithValue("@OrganiserId", organiserId);
+                        insertCmd.Parameters.AddWithValue("@OrganiserName", organiserName);
                         insertCmd.ExecuteNonQuery();
                     }
                 }
@@ -123,7 +123,7 @@ namespace prog_part_two.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message });
-            }
+            } 
         }
     }
 }
