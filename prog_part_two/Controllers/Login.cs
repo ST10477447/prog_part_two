@@ -12,9 +12,18 @@ namespace prog_part_two.Controllers
         [HttpPost("login")]
         public IActionResult Logins(string organiserName, string organiserEmail, string organiserPassword)
         {
+            
+            if(string.IsNullOrEmpty(organiserEmail) || 
+                !organiserEmail.ToLower().Contains("gmail.com") ||
+                string.IsNullOrEmpty(organiserPassword) ||
+                organiserPassword.Length <= 8)
+            {
+                return Unauthorized(new {message = "Invalid Organiser name or email or password." }); 
+            }
+            
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
             // Query looks up the organiser by name and email
-            string query = "SELECT Id, OrganiserName FROM Organiser WHERE OrganiserName = @Name AND OrganiserEmail = @Email";
+            string query = "SELECT Id, OrganiserName, OrganiserPasswordhash FROM Organiser WHERE OrganiserName = @Name AND OrganiserEmail = @Email";
 
             try
             {
@@ -24,7 +33,6 @@ namespace prog_part_two.Controllers
                     {
                         cmd.Parameters.AddWithValue("@Name", organiserName);
                         cmd.Parameters.AddWithValue("@Email", organiserEmail);
-                        cmd.Parameters.AddWithValue("@Password", organiserPassword);
 
 
                         connect.Open();
@@ -51,7 +59,7 @@ namespace prog_part_two.Controllers
                         }
                     }
                     // If no record matches
-                    return Unauthorized(new { message = "Invalid Organiser name or email." });
+                    return Unauthorized(new { message = "Invalid Organiser name or email or password." });
                 }
             }
             catch (Exception ex)
@@ -63,8 +71,15 @@ namespace prog_part_two.Controllers
         [HttpPost("participant/login")]
         public IActionResult ParticipantLogin(string participantName, string participantEmail, string participantPassword)
         {
+            if (string.IsNullOrEmpty(participantEmail) ||
+                !participantEmail.ToLower().Contains("gmail.com") ||
+                string.IsNullOrEmpty(participantPassword) ||
+                participantPassword.Length <= 8)
+            {
+                return Unauthorized(new { message = "Invalid participant name or email or password." });
+            }
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
-            string query = "SELECT ParticipantId, ParticipantName FROM Participant WHERE ParticipantName = @Name AND ParticipantEmail = @Email";
+            string query = "SELECT ParticipantId, ParticipantName, ParticipantPasswordhash FROM Participant WHERE ParticipantName = @Name AND ParticipantEmail = @Email";
 
             try
             {
@@ -74,7 +89,7 @@ namespace prog_part_two.Controllers
                     {
                         cmd.Parameters.AddWithValue("@Name", participantName);
                         cmd.Parameters.AddWithValue("@Email", participantEmail);
-                        cmd.Parameters.AddWithValue("@Password", participantPassword);
+                       
 
                         connect.Open();
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -94,7 +109,7 @@ namespace prog_part_two.Controllers
                             }
                         }
                     }
-                    return Unauthorized(new { message = "Invalid Participant name or email." });
+                    return Unauthorized(new { message = "Invalid Participant name or email or password." });
                 }
             }
             catch (Exception ex)
