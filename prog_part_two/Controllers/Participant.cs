@@ -53,6 +53,11 @@ namespace prog_part_two.Controllers
 
             try
             {
+                if (ParticipantEmail != null && !ParticipantEmail.ToLower().Contains("gmail.com") && Password != null && Password.Length <= 8)
+                {
+                    return "Invalid participant email or password.";
+                }
+
                 string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
 
                 SqlConnection connect = new SqlConnection(connection_string);

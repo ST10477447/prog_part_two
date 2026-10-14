@@ -13,18 +13,7 @@ namespace prog_part_two.Controllers
         {
         };
 
-        [HttpGet]
-        public string login(string email, string password)
-        {
-            if (email.ToLower().Contains("gmail.com") && password.Length >= 8)
-            {
-                return "login successful";
-            }
-            else
-            {
-                return "incorrect email or password";
-            }
-        }
+       
 
         [HttpGet("{id}")]
         public IActionResult GetById(int Id)
@@ -60,6 +49,11 @@ namespace prog_part_two.Controllers
 
             try
             {
+                if (OrganiserEmail != null && !OrganiserEmail.ToLower().Contains("gmail.com") && Password != null && Password.Length <= 8)
+                {
+                    return "Invalid organiser email or password.";
+                }
+
                 string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
 
                 SqlConnection connect = new SqlConnection(connection_string);
