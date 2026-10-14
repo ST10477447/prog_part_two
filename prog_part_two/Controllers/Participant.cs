@@ -14,7 +14,17 @@ namespace prog_part_two.Controllers
         };
 
         [HttpGet]
-        private IActionResult GetAll() => Ok(participant);
+        public string login(string email, string password)
+        {
+            if (email.ToLower().Contains("gmail.com") && password.Length >= 8)
+            {
+                return "login successful";
+            }
+            else
+            {
+                return "incorrect email or password";
+            }
+        }
 
         [HttpGet]
         public IActionResult GetById(int Id)
@@ -75,17 +85,6 @@ namespace prog_part_two.Controllers
             return message;
         }
 
-        [HttpGet]
-        public string login(string email, string password)
-        {
-            if (email.ToLower().Contains("gmail.com") && password.Length >= 8)
-            {
-                return "login successful";
-            }
-            else
-            {
-                return "incorrect email or password";
-            }
-        }
+      
     }
 }
