@@ -9,8 +9,6 @@ namespace prog_part_two.Controllers
     public class Login : ControllerBase
     {
 
-
-
         [HttpPost("login")]
         public IActionResult Logins(string organiserName, string organiserEmail, string organiserPassword)
         {
