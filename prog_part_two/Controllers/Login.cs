@@ -31,22 +31,27 @@ namespace prog_part_two.Controllers
                         {
                             if (reader.Read())
                             {
-                                int id = reader.GetInt32(0);
-                                string name = reader.GetString(1);
-
-                                // Login successful: Return identity data to the client
-                                return Ok(new
+                                string storedHash1 = reader.GetString(2);
+                                if (BCrypt.Net.BCrypt.Verify(organiserPassword, storedHash1))
                                 {
-                                    message = "Login successful",
-                                    organiserId = id,
-                                    organiserName = name
-                                });
+                                   
+                                    int id = reader.GetInt32(0);
+                                    string name = reader.GetString(1);
+
+                                    // Login successful: Return identity data to the client
+                                    return Ok(new
+                                    {
+                                        message = "Login successful",
+                                        organiserId = id,
+                                        organiserName = name
+                                    });
+                                }
                             }
                         }
                     }
+                    // If no record matches
+                    return Unauthorized(new { message = "Invalid Organiser name or email." });
                 }
-                // If no record matches
-                return Unauthorized(new { message = "Invalid Organiser name or email." });
             }
             catch (Exception ex)
             {
@@ -75,17 +80,21 @@ namespace prog_part_two.Controllers
                         {
                             if (reader.Read())
                             {
-                                return Ok(new
+                                string storedHash = reader.GetString(2); // Assuming the hashed password is in the 3rd column (index 2)
+                                if (BCrypt.Net.BCrypt.Verify(participantPassword, storedHash))
                                 {
-                                    message = "Participant login successful",
-                                    participantId = reader.GetInt32(0),
-                                    participantName = reader.GetString(1)
-                                });
+                                    return Ok(new
+                                    {
+                                        message = "Participant login successful.",
+                                        participantId = reader.GetInt32(0),
+                                        participantName = reader.GetString(1)
+                                    });
+                                }
                             }
                         }
                     }
+                    return Unauthorized(new { message = "Invalid Participant name or email." });
                 }
-                return Unauthorized(new { message = "Invalid Participant name or email." });
             }
             catch (Exception ex)
             {

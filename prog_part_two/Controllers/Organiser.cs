@@ -65,8 +65,9 @@ namespace prog_part_two.Controllers
                 SqlConnection connect = new SqlConnection(connection_string);
 
                 connect.Open();
+                string hashPassword = BCrypt.Net.BCrypt.HashPassword(Password, workFactor: 12);
 
-                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserAge + "' ,'" + OrganiserEmail + "', '" + OrganiserNumber + "', '" + Password + "')";
+                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserAge + "' ,'" + OrganiserEmail + "', '" + OrganiserNumber + "', '" + hashPassword + "')";
 
                 SqlCommand run_query = new SqlCommand(query, connect);
 
