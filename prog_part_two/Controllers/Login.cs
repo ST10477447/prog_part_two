@@ -9,8 +9,10 @@ namespace prog_part_two.Controllers
     public class Login : ControllerBase
     {
 
+
+
         [HttpPost("login")]
-        public IActionResult Logins(string organiserName, string organiserEmail, int organiserPassword)
+        public IActionResult Logins(string organiserName, string organiserEmail, string organiserPassword)
         {
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
             // Query looks up the organiser by name and email
@@ -55,7 +57,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost("participant/login")]
-        public IActionResult ParticipantLogin(string participantName, string participantEmail, int participantPassword)
+        public IActionResult ParticipantLogin(string participantName, string participantEmail, string participantPassword)
         {
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
             string query = "SELECT ParticipantId, ParticipantName FROM Participant WHERE ParticipantName = @Name AND ParticipantEmail = @Email";

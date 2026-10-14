@@ -44,7 +44,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost]
-        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, int OrganiserAge, string OrganiserEmail, int OrganiserNumber, int Password)
+        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, int OrganiserAge, string OrganiserEmail, int OrganiserNumber, string Password)
         {
             string message = "";
 
@@ -98,6 +98,19 @@ namespace prog_part_two.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public string login(string email, string password)
+        {
+            if(email.ToLower().Contains("gmail.com") && password.Length >= 8)
+            {
+                return "login successful";
+            }
+            else
+            {
+                return "incorrect email or password";
             }
         }
     }
