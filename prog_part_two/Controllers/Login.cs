@@ -26,6 +26,7 @@ namespace prog_part_two.Controllers
                         cmd.Parameters.AddWithValue("@Email", organiserEmail);
                         cmd.Parameters.AddWithValue("@Password", organiserPassword);
 
+
                         connect.Open();
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
