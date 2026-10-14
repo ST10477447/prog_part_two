@@ -7,5 +7,6 @@
         public string? OrganiserSurname { get; set; }
         public string? OrganiserEmail { get; set; }
         public int OrganiserNumber { get; set; }
+        public int Password { get; set; }
     }
 }

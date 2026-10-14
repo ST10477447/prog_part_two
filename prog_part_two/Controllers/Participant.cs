@@ -34,6 +34,7 @@ namespace prog_part_two.Controllers
             Participants.ParticipantEmail = updated.ParticipantEmail;
             Participants.ParticipantNumber = updated.ParticipantNumber;
             Participants.ParticipantGender = updated.ParticipantGender;
+            Participants.Password = updated.Password;
             return NoContent();
         }
 
@@ -45,7 +46,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost]
-        public string store_participantInfo(string ParticipantName, string ParticipantSurname, int ParticipantAge, string ParticipantEmail, int ParticipantNumber, string ParticipantGender)
+        public string store_participantInfo(string ParticipantName, string ParticipantSurname, int ParticipantAge, string ParticipantEmail, int ParticipantNumber, string ParticipantGender, int Password)
         {
             string message = "";
 
@@ -57,7 +58,7 @@ namespace prog_part_two.Controllers
 
                 connect.Open();
 
-                string query = @"insert into Participant values ('" + ParticipantName + "', '" + ParticipantSurname + "', '" + ParticipantAge + "' ,'" + ParticipantEmail + "', '" + ParticipantNumber + "', '" + ParticipantGender + "')";
+                string query = @"insert into Participant values ('" + ParticipantName + "', '" + ParticipantSurname + "', '" + ParticipantAge + "' ,'" + ParticipantEmail + "', '" + ParticipantNumber + "', '" + ParticipantGender + "', '" + Password + "')";
 
                 SqlCommand run_query = new SqlCommand(query, connect);
 

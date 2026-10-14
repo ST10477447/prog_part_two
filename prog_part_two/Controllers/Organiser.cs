@@ -32,6 +32,7 @@ namespace prog_part_two.Controllers
             Organisers.OrganiserSurname = updated.OrganiserSurname;
             Organisers.OrganiserEmail = updated.OrganiserEmail;
             Organisers.OrganiserNumber = updated.OrganiserNumber;
+            Organisers.Password = updated.Password;
             return NoContent();
         }
 
@@ -43,7 +44,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost]
-        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, int OrganiserAge, string OrganiserEmail, int OrganiserNumber)
+        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, int OrganiserAge, string OrganiserEmail, int OrganiserNumber, int Password)
         {
             string message = "";
 
@@ -55,7 +56,7 @@ namespace prog_part_two.Controllers
 
                 connect.Open();
 
-                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserAge + "' ,'" + OrganiserEmail + "', '" + OrganiserNumber + "')";
+                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserAge + "' ,'" + OrganiserEmail + "', '" + OrganiserNumber + "', '" + Password + "')";
 
                 SqlCommand run_query = new SqlCommand(query, connect);
 

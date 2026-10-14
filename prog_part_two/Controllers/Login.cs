@@ -10,7 +10,7 @@ namespace prog_part_two.Controllers
     {
 
         [HttpPost("login")]
-        public IActionResult Logins(string organiserName, string organiserEmail)
+        public IActionResult Logins(string organiserName, string organiserEmail, int organiserPassword)
         {
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
             // Query looks up the organiser by name and email
@@ -24,6 +24,7 @@ namespace prog_part_two.Controllers
                     {
                         cmd.Parameters.AddWithValue("@Name", organiserName);
                         cmd.Parameters.AddWithValue("@Email", organiserEmail);
+                        cmd.Parameters.AddWithValue("@Password", organiserPassword);
 
                         connect.Open();
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -54,7 +55,7 @@ namespace prog_part_two.Controllers
         }
 
         [HttpPost("participant/login")]
-        public IActionResult ParticipantLogin(string participantName, string participantEmail)
+        public IActionResult ParticipantLogin(string participantName, string participantEmail, int participantPassword)
         {
             string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
             string query = "SELECT ParticipantId, ParticipantName FROM Participant WHERE ParticipantName = @Name AND ParticipantEmail = @Email";
@@ -67,6 +68,7 @@ namespace prog_part_two.Controllers
                     {
                         cmd.Parameters.AddWithValue("@Name", participantName);
                         cmd.Parameters.AddWithValue("@Email", participantEmail);
+                        cmd.Parameters.AddWithValue("@Password", participantPassword);
 
                         connect.Open();
                         using (SqlDataReader reader = cmd.ExecuteReader())

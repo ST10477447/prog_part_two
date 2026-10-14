@@ -9,5 +9,6 @@
         public string? ParticipantEmail { get; set; }
         public int ParticipantNumber { get; set; }
         public string? ParticipantGender { get; set; }
+        public int Password { get; set; }
     }
 }
