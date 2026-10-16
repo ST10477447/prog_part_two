@@ -12,7 +12,7 @@ namespace prog_part_two.Controllers
 
         // 1. Submit a result (For Organisers)
         [HttpPost("submit_result")]
-        public IActionResult SubmitResult(int participantId, string categoryName, string scoreOrOutcome)
+        public IActionResult SubmitResult(int organiserId, string participantName, string eventName,string categoryName, string scoreOrOutcome)
         {
             // Simple validation rule
             if (string.IsNullOrEmpty(scoreOrOutcome))
@@ -20,8 +20,8 @@ namespace prog_part_two.Controllers
                 return BadRequest(new { message = "Score or outcome cannot be empty." });
             }
 
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
-            string query = "INSERT INTO Results (ParticipantId, CategoryName, ScoreOrOutcome) VALUES (@ParticipantId, @CategoryName, @Score)";
+            string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
+            string query = "INSERT INTO Results (OrganiserId, ParticipantName, EventName, CategoryName, ScoreOrOutcome) VALUES ( @OrganiserId, @ParticipantName, @EventName ,@CategoryName, @ScoreorOutcome)";
 
             try
             {
@@ -29,9 +29,11 @@ namespace prog_part_two.Controllers
                 {
                     using (SqlCommand cmd = new SqlCommand(query, connect))
                     {
-                        cmd.Parameters.AddWithValue("@ParticipantId", participantId);
+                        cmd.Parameters.AddWithValue("@OrganiserId", organiserId);
+                        cmd.Parameters.AddWithValue("@ParticipantName", categoryName);
+                        cmd.Parameters.AddWithValue("@EventName", eventName);
                         cmd.Parameters.AddWithValue("@CategoryName", categoryName);
-                        cmd.Parameters.AddWithValue("@Score", scoreOrOutcome);
+                        cmd.Parameters.AddWithValue("@ScoreOrOutcome", scoreOrOutcome);
 
                         connect.Open();
                         cmd.ExecuteNonQuery();
@@ -49,7 +51,7 @@ namespace prog_part_two.Controllers
         [HttpGet("participant/{participantId}/results")]
         public IActionResult GetParticipantResults(int participantId)
         {
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+            string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_2;";
             string query = "SELECT CategoryName, ScoreOrOutcome, DateRecorded FROM Results WHERE ParticipantId = @ParticipantId";
 
             var resultsList = new List<object>();

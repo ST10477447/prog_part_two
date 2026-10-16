@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using prog_part_two.Models;
 using System.Data.SqlClient;
+using System.Security.Claims;
 
 namespace prog_part_two.Controllers
 {
@@ -10,120 +11,100 @@ namespace prog_part_two.Controllers
     [ApiController]
     public class Event : ControllerBase
     {
-        private static List<Events> events = new()
-        {
-        };
+        private static List<Events> events = new();
 
         [HttpGet]
         public IActionResult GetAll() => Ok(events);
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int Id)
+        public IActionResult GetById(int id)
         {
-            var Events = events.FirstOrDefault(events => events.Id == Id);
-            return Events is not null ? Ok(Events) : NotFound();
+            var ev = events.FirstOrDefault(e => e.EventId == id);
+            return ev is not null ? Ok(ev) : NotFound();
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateById(int Id, Events updated)
+        public IActionResult UpdateById(int id, Events updated)
         {
-            var Events = events.FirstOrDefault(events => events.Id == Id);
-            if (Events is null) return NotFound();
+            var ev = events.FirstOrDefault(e => e.EventId == id);
+            if (ev is null) return NotFound();
 
-            Events.EventName = updated.EventName;
-            Events.EventDate = updated.EventDate;
-            Events.EventLocation = updated.EventLocation;
-            Events.EventDescription = updated.EventDescription;
-            Events.OrganiserId = updated.OrganiserId;
-            Events.ParticipantId = updated.ParticipantId;
+            ev.EventName = updated.EventName;
+            ev.EventType = updated.EventType;
+            ev.Distance = updated.Distance;
+            ev.EventDate = updated.EventDate;
+            ev.EventLocation = updated.EventLocation;
+            ev.EventDescription = updated.EventDescription;
+            ev.OrganiserId = updated.OrganiserId;
+            ev.CategoryId = updated.CategoryId;
+            
 
             return NoContent();
         }
+
         [HttpDelete("{id}")]
-        public IActionResult DeleteById(int Id)
+        public IActionResult DeleteById(int id)
         {
-            events.RemoveAll(events => events.Id == Id);
+            events.RemoveAll(e => e.EventId == id);
             return NoContent();
         }
 
+        // Only organisers can create events
         [HttpPost]
-        [Authorize(Roles = "Organiser")]
-        public string Events(int EventId, string EventName, string EventDate, string EventLocation, string EventDescription, int OrganiserId, int ParticipantId)
+        public IActionResult CreateEvent(string EventName, string EventType, string Distance,
+              string EventDate, string EventLocation, string EventDescription,
+              int OrganiserId, int CategoryId)
         {
-            string message = "";
+            
+
+
 
             try
             {
-                string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
-                using SqlConnection connect = new SqlConnection(connection_string);
+                string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
+                using SqlConnection connect = new SqlConnection(connectionString);
 
                 connect.Open();
 
-                string query = @"INSERT INTO Events (EventId, EventName, EventDate, EventLocation, EventDescription, OrganiserId, ParticipantId)
-                         VALUES (@EventId, @EventName, @EventDate, @EventLocation, @EventDescription, @OrganiserId, @ParticipantId)";
+                // 1. Verify that the user's role is "Organiser"
+                string roleQuery = "SELECT Role FROM Organiser WHERE OrganiserId = @OrganiserId";
+                using SqlCommand roleCmd = new SqlCommand(roleQuery, connect);
+                roleCmd.Parameters.AddWithValue("@OrganiserId", OrganiserId);
 
-                SqlCommand run_query = new SqlCommand(query, connect);
+                object roleResult = roleCmd.ExecuteScalar();
 
-                // Use parameters to avoid SQL injection
-                run_query.Parameters.AddWithValue("@EventId", EventId);
-                run_query.Parameters.AddWithValue("@EventName", EventName);
-                run_query.Parameters.AddWithValue("@EventDate", EventDate);
-                run_query.Parameters.AddWithValue("@EventLocation", EventLocation);
-                run_query.Parameters.AddWithValue("@EventDescription", EventDescription);
-                run_query.Parameters.AddWithValue("@OrganiserId", OrganiserId);
-                run_query.Parameters.AddWithValue("@ParticipantId", ParticipantId);
-
-                run_query.ExecuteNonQuery();
-
-                message = "Event saved successfully";
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-            }
-            return message;
-        }
-
-        [HttpPost("create_event")]
-        public IActionResult CreateEvent(string eventName, string eventDescription, string organiserName)
-        {
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
-
-            // 1. Check if the Organiser exists first
-            string checkQuery = "SELECT COUNT(1) FROM Organiser WHERE Id = @OrganiserId";
-            string insertQuery = "INSERT INTO Event (EventName, OrganiserId) VALUES (@EventName, @OrganiserId)";
-
-            try
-            {
-                using (SqlConnection connect = new SqlConnection(connectionString))
+                if (roleResult == null || roleResult.ToString() != "Organiser")
                 {
-                    connect.Open();
-
-                    // Validate Organiser
-                    using (SqlCommand checkCmd = new SqlCommand(checkQuery, connect))
-                    {
-                        checkCmd.Parameters.AddWithValue("@OrganiserName", organiserName);
-                        int exists = Convert.ToInt32(checkCmd.ExecuteScalar());
-
-                        if (exists == 0)
-                            return Unauthorized(new { message = "Only registered Organisers can create events." });
-                    }
-
-                    // Insert Event
-                    using (SqlCommand insertCmd = new SqlCommand(insertQuery, connect))
-                    {
-                        insertCmd.Parameters.AddWithValue("@EventName", eventName);
-                        insertCmd.Parameters.AddWithValue("@EventDescription", eventDescription);
-                        insertCmd.Parameters.AddWithValue("@OrganiserName", organiserName);
-                        insertCmd.ExecuteNonQuery();
-                    }
+                    return Unauthorized("Access denied. Only users with the 'Organiser' role can create an event.");
                 }
-                return Ok(new { message = "Event created successfully by Organiser." });
+
+
+
+                string query = @"INSERT INTO Events (EventName, EventType, Distance, EventDate, EventLocation, EventDescription, OrganiserId, CategoryId)
+                         VALUES (@EventName, @EventType, @Distance, @EventDate, @EventLocation, @EventDescription, @OrganiserId, @CategoryId)";
+
+                using SqlCommand cmd = new SqlCommand(query, connect);
+
+                cmd.Parameters.AddWithValue("@EventName", EventName);
+                cmd.Parameters.AddWithValue("@EventType", EventType);
+                cmd.Parameters.AddWithValue("@Distance", Distance);
+                cmd.Parameters.AddWithValue("@EventDate", EventDate);
+                cmd.Parameters.AddWithValue("@EventLocation", EventLocation);
+                cmd.Parameters.AddWithValue("@EventDescription", EventDescription);
+                cmd.Parameters.AddWithValue("@OrganiserId", OrganiserId);
+                cmd.Parameters.AddWithValue("@CategoryId", CategoryId);
+                
+
+                cmd.ExecuteNonQuery();
+
+                return Ok("Event saved successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
-            } 
+                return BadRequest(ex.Message);
+            }
         }
+
     }
-}
+    }
+

@@ -12,55 +12,46 @@ namespace prog_part_two.Controllers
         [HttpPost("login")]
         public IActionResult Logins(string organiserName, string organiserEmail, string organiserPassword)
         {
-            
-            if(string.IsNullOrEmpty(organiserEmail) || 
-                !organiserEmail.ToLower().Contains("gmail.com") ||
+            // 1. Basic validation
+            if (string.IsNullOrWhiteSpace(organiserName) ||
+                string.IsNullOrWhiteSpace(organiserEmail) ||
+                !organiserEmail.Trim().EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase) ||
                 string.IsNullOrEmpty(organiserPassword) ||
-                organiserPassword.Length <= 8)
+                organiserPassword.Length < 8)
             {
-                return Unauthorized(new {message = "Invalid Organiser name or email or password." }); 
+                return Unauthorized(new { message = "Invalid Organiser name, email, or password." });
             }
-            
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
-            // Query looks up the organiser by name and email
-            string query = "SELECT Id, OrganiserName, OrganiserPasswordhash FROM Organiser WHERE OrganiserName = @Name AND OrganiserEmail = @Email";
+
+            string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_ll;Integrated Security=True;TrustServerCertificate=True;";
+            string query = "SELECT OrganiserId, OrganiserName, Password FROM Organiser WHERE OrganiserName = @Name AND OrganiserEmail = @Email";
 
             try
             {
-                using (SqlConnection connect = new SqlConnection(connectionString))
+                using SqlConnection connect = new SqlConnection(connectionString);
+                using SqlCommand cmd = new SqlCommand(query, connect);
+
+                cmd.Parameters.AddWithValue("@Name", organiserName);
+                cmd.Parameters.AddWithValue("@Email", organiserEmail);
+
+                connect.Open();
+                using SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
                 {
-                    using (SqlCommand cmd = new SqlCommand(query, connect))
+                    string storedHash = reader["Password"].ToString();
+
+                    if (BCrypt.Net.BCrypt.Verify(organiserPassword, storedHash))
                     {
-                        cmd.Parameters.AddWithValue("@Name", organiserName);
-                        cmd.Parameters.AddWithValue("@Email", organiserEmail);
-
-
-                        connect.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        return Ok(new
                         {
-                            if (reader.Read())
-                            {
-                                string storedHash1 = reader.GetString(2);
-                                if (BCrypt.Net.BCrypt.Verify(organiserPassword, storedHash1))
-                                {
-                                   
-                                    int id = reader.GetInt32(0);
-                                    string name = reader.GetString(1);
-
-                                    // Login successful: Return identity data to the client
-                                    return Ok(new
-                                    {
-                                        message = "Login successful",
-                                        organiserId = id,
-                                        organiserName = name
-                                    });
-                                }
-                            }
-                        }
+                            message = "Login successful",
+                            organiserId = Convert.ToInt32(reader["OrganiserId"]),
+                            organiserName = reader["OrganiserName"].ToString()
+                        });
                     }
-                    // If no record matches
-                    return Unauthorized(new { message = "Invalid Organiser name or email or password." });
                 }
+
+                return Unauthorized(new { message = "Invalid Organiser name, email, or password." });
             }
             catch (Exception ex)
             {
@@ -78,7 +69,8 @@ namespace prog_part_two.Controllers
             {
                 return Unauthorized(new { message = "Invalid participant name or email or password." });
             }
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+
+            string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
             string query = "SELECT ParticipantId, ParticipantName, ParticipantPasswordhash FROM Participant WHERE ParticipantName = @Name AND ParticipantEmail = @Email";
 
             try
@@ -89,21 +81,22 @@ namespace prog_part_two.Controllers
                     {
                         cmd.Parameters.AddWithValue("@Name", participantName);
                         cmd.Parameters.AddWithValue("@Email", participantEmail);
-                       
 
                         connect.Open();
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                string storedHash = reader.GetString(2); // Assuming the hashed password is in the 3rd column (index 2)
+                                // FIX: Retrieve columns safely by explicit string identifiers
+                                string storedHash = reader.GetString(reader.GetOrdinal("ParticipantPasswordhash"));
+
                                 if (BCrypt.Net.BCrypt.Verify(participantPassword, storedHash))
                                 {
                                     return Ok(new
                                     {
                                         message = "Participant login successful.",
-                                        participantId = reader.GetInt32(0),
-                                        participantName = reader.GetString(1)
+                                        participantId = reader.GetInt32(reader.GetOrdinal("ParticipantId")),
+                                        participantName = reader.GetString(reader.GetOrdinal("ParticipantName"))
                                     });
                                 }
                             }
@@ -118,10 +111,11 @@ namespace prog_part_two.Controllers
             }
         }
 
+
         [HttpGet("events/categories")]
         public IActionResult GetEventCategories()
         {
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+            string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
             // Adjust table and column names to match your actual schema(change)
             string query = "SELECT EventType, CategoryName, EventDescription FROM Events";
 

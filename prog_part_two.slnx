@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="prog_part_two/prog_part_two.csproj" />
+  <Project Path="Test_Login/Test_Login.csproj" />
 </Solution>

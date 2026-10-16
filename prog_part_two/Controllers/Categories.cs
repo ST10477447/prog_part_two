@@ -19,14 +19,14 @@ namespace prog_part_two.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int Id)
         {
-            var Category = category.FirstOrDefault(category => category.Id == Id);
+            var Category = category.FirstOrDefault(category => category.CategoryId == Id);
             return Category is not null ? Ok(Category) : NotFound();
         }
 
         [HttpPut]
         public IActionResult UpdateById(int Id, Category updated)
         {
-            var Category = category.FirstOrDefault(category => category.Id == Id);
+            var Category = category.FirstOrDefault(category => category.CategoryId == Id);
             if (Category is null) return NotFound();
             Category.CategoryName = updated.CategoryName;
             Category.CategoryDescription = updated.CategoryDescription;
@@ -36,24 +36,24 @@ namespace prog_part_two.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteById(int Id)
         {
-            category.RemoveAll(category => category.Id == Id);
+            category.RemoveAll(category => category.CategoryId == Id);
             return NoContent();
         }
 
         [HttpPost]
-        public string Category(int Id, string CategoryName, string CategoryDescription)
+        public string Category(string CategoryName, string CategoryDescription)
         {
             string message = "";
 
             try
             {
-                string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+                string connection_string = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
 
                 SqlConnection connect = new SqlConnection(connection_string);
 
                 connect.Open();
 
-                string query = @"insert into Events values ('" + Id + "','" + CategoryName + "', '" + CategoryDescription + "')";
+                string query = @"insert into Category values ('" + CategoryName + "', '" + CategoryDescription + "')";
 
                 SqlCommand run_query = new SqlCommand(query, connect);
 

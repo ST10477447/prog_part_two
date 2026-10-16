@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
 using prog_part_two.Models;
+using System.Data.SqlClient;
 
 namespace prog_part_two.Controllers
 {
@@ -18,14 +19,14 @@ namespace prog_part_two.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int Id)
         {
-            var Organisers = organiser.FirstOrDefault(organiser => organiser.Id == Id);
+            var Organisers = organiser.FirstOrDefault(organiser => organiser.OrganiserId == Id);
             return Organisers is not null ? Ok(Organisers) : NotFound();
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateById(int Id, Organisers updated)
         {
-            var Organisers = organiser.FirstOrDefault(organiser => organiser.Id == Id);
+            var Organisers = organiser.FirstOrDefault(organiser => organiser.OrganiserId == Id);
             if (Organisers is null) return NotFound();
             Organisers.OrganiserName = updated.OrganiserName;
             Organisers.OrganiserSurname = updated.OrganiserSurname;
@@ -38,12 +39,12 @@ namespace prog_part_two.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteById(int Id)
         {
-            organiser.RemoveAll(organiser => organiser.Id == Id);
+            organiser.RemoveAll(organiser => organiser.OrganiserId == Id);
             return NoContent();
         }
 
         [HttpPost]
-        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, int OrganiserAge, string OrganiserEmail, int OrganiserNumber, string Password)
+        public string store_organiserInfo(string OrganiserName, string OrganiserSurname, string OrganiserEmail, int OrganiserNumber, string Password)
         {
             string message = "";
 
@@ -54,14 +55,14 @@ namespace prog_part_two.Controllers
                     return "Invalid organiser email or password.";
                 }
 
-                string connection_string = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+                string connection_string = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
 
                 SqlConnection connect = new SqlConnection(connection_string);
 
                 connect.Open();
                 string hashPassword = BCrypt.Net.BCrypt.HashPassword(Password, workFactor: 12);
 
-                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserAge + "' ,'" + OrganiserEmail + "', '" + OrganiserNumber + "', '" + hashPassword + "')";
+                string query = @"insert into Organiser values ('" + OrganiserName + "', '" + OrganiserSurname + "', '" + OrganiserEmail + "', '" + OrganiserNumber + "', '" + hashPassword + "', 'Organiser')";
 
                 SqlCommand run_query = new SqlCommand(query, connect);
 
@@ -81,7 +82,7 @@ namespace prog_part_two.Controllers
         [HttpPost("store_participant")]
         public IActionResult StoreParticipantInfo(string name, string email, int organiserId)
         {
-            string connectionString = @"Data source=(localdb)\testingPoe;database=poe_prac1;";
+            string connectionString = @"Data source=(localdb)\api_part_1;database=prog_part_ll;";
             string query = "INSERT INTO Participant (ParticipantName, ParticipantEmail, OrganiserId) VALUES (@Name, @Email, @OrganiserId)";
 
             try
