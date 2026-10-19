@@ -2,9 +2,9 @@ name: .NET Core CI / Test Suite
 
 on:
   push:
-    branches: [ "main", "development" ]
+    branches: [push, pull_request]
   pull_request:
-    branches: [ "main", "development" ]
+    branches: [push, pull_request]
 
 jobs:
   build-and-test:
