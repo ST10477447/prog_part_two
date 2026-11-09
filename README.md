@@ -1,6 +1,169 @@
 # Race Day Event Management API (ASP.NET Core Web API)
 
 ## 📖 Overview
+This project is a robust **C# ASP.NET Core Web API** designed for managing sporting events, participants, and organisers. Built to satisfy the rigorous criteria of our course assignment, the system features role-based access control (RBAC), complex event enrolment workflows, database transactional integrity, and automated results tracking.
+
+The architecture adheres strictly to RESTful design principles and clean architectural patterns, utilizing native Data Models and parameter serialization objects to prevent validation breakdowns and decouple the persistence layer from the client interface.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+* **Framework:** .NET 8.0 / 9.0 (ASP.NET Core Web API)
+* **Database & ORM:** Microsoft SQL Server using native **ADO.NET (`SqlConnection`, `SqlCommand`)** raw parameter query execution paths
+* **Security:** Native secure session caching tracking structures with cryptographic **BCrypt.Net** password hashing algorithms
+* **Validation:** Explicitly managed imperative validation gates embedded directly within controller actions
+* **Documentation:** Integrated REST endpoint signatures mapped directly via explicit routing decorators
+
+---
+
+## ⚙️ Functional Requirements
+
+### 1. 🔑 Authentication & Authorization
+Secured via a unified pipeline processing structured data envelopes. Access pathways evaluate the explicit string metadata fields passed back from sequential database checks to determine tracking roles: `Organiser` or `Participant`.
+
+* **`POST /api/Login/login`** -> Verifies organiser parameters against cryptographic password hashes using an implicit work factor configuration.
+* **`POST /api/Login/participant/login`** -> Sequentially validates participant account matching rules across separate data structures.
+
+```csharp
+[HttpPost("login")]
+public IActionResult Logins([FromBody] LoginModel model)
+
+[HttpPost("participant/login")]
+public IActionResult ParticipantLogin([FromBody] LoginModel model) 
+```
+
+### 2. 👤 User Profile Management
+Authenticated users can manage their personal profiles, mapping to data layouts like names, unique contact numbers, and emails.
+
+* **`POST /api/Organiser/register-organiser`** -> Commits a newly registered organiser profile containing tracking columns like company organisation details into the repository framework.
+
+```csharp
+[HttpPost("register-organiser")]
+public async Task<IActionResult> store_organiserInfo([FromBody] prog_part_two.Models.Organisers model) 
+```
+
+### 3. 🎉 Event Management
+Allows creation and tracking of multiple physical events using parameterized insertion routines to map data directly onto target schema columns.
+* **Organisers:** Complete execution authority to publish, adjust, or completely delete race entries from the catalog.
+* **Participants:** Unified search exploration triggers to view available public race indexes.
+* **Tracked Metrics:** EventName (*Max 15 chars*), EventType (*Max 15 chars*), Distance (*Max 5 chars*), EventDate (*Max 10 chars*), EventLocation (*Max 50 chars*), and EventDescription (*Max 50 chars*).
+
+```csharp
+[HttpPost("store-event")]
+public async Task<IActionResult> StoreEvent([FromBody] prog_part_two.Models.Event model) 
+
+[HttpGet("events/categories")]
+public IActionResult GetEventCategories() 
+```
+
+### 4. 🏷️ Category Management
+Organisers configure standalone classification tracks or division groups inside the storage structures to map upcoming race boundaries. Both roles can view active categories.
+
+```csharp
+[HttpPost("store-category-only")]
+public async Task<IActionResult> StoreCategoryOnly([FromBody] prog_part_two.Models.Category model) 
+```
+
+### 5. 📝 Event Enrolments
+Participants register for events by mapping individual account records to target race configurations, linking explicit identity bridges across separate table indices.
+
+```csharp
+[HttpPost("store_participant")]
+public IActionResult StoreParticipantInfo(string name, string email, int organiserId) 
+```
+
+### 6. 🏆 Results Processing
+Organisers handle operational scoring parameters, allowing execution gates to publish runner completion durations, placement lists, and leaderboard track positions safely. Participants can securely pull their historical scoreboards.
+
+---
+
+## 🛡️ Assignment Business Logic & Validation Rules
+
+To prevent data corruption and enforce domain rules, the API implements strict business validation checking directly inside the core controller action gates:
+
+* **Email Structure Constraints:** User accounts require a specific corporate syntax envelope. The backend validation wire throws an immediate error if email parameters do not explicitly contain or end with `@gmail.com`.
+* **Password Length Rules:** Access codes are evaluated stringently against size rules to maintain algorithmic security integrity. Organiser registration passwords must be at least 8 characters long, while participant passwords must exceed 6 characters.
+* **Input Sanitization:** Character fields enforce exact truncation guardrails mirroring database allocation parameters. The system automatically restricts `EventName` and `EventType` to 15 characters, `Distance` to 5 characters, and venue metadata coordinates to 50 characters maximum.
+
+### 🛑 Global Error Handling
+The application uses structured try-catch execution blocks wrapping code pathways to intercept server faults gracefully. Instead of leaking raw connection metadata or internal file paths to the client, it captures database exceptions and maps them to clean, parameterized tracking structures:
+
+```json
+{
+  "message": "Invalid Organiser email, or password.",
+  "status": 401,
+  "error": "Database Error or Constraint Violation details if logged in developer tracking mode"
+}
+```
+
+---
+
+## 🗄️ Database & Seed Data
+
+The project leverages **Microsoft SQL Server** as the persistent storage engine, processing transactions through local data instances (`(localdb)\api_part_1`) targeting the database file catalog schema `prog_part_ll`.
+
+### 🌱 Data Seeding
+Upon initialization within your environment configuration, the local database table architecture requires the direct manual initialization or registration of base structural roles to fulfill evaluation tests:
+* **Default Organiser Account:** Registered using valid `@gmail.com` parameters paired with an enterprise-grade BCrypt hashed tracking key string.
+* **Table Constraint Safety:** The `Events` relational structure enforces strict identity mappings, deploying fallback null parameters across foreign key indices (`OrganiserId`, `ParticipantId`, `CategoryId`) to preserve table structural normalization.
+
+---
+
+## 📂 Project Structure
+The project follows standard ASP.NET Core architectural layouts to enforce clean separation of concerns:
+
+```text
+prog_part_two/
+│
+├── Controllers/       # API endpoints processing input streams (Login, Organiser)
+├── Models/            # Model classes mirroring database schemas (LoginModel, Organisers, Event, Category)
+├── Properties/        # Local execution tracking configurations (launchSettings.json)
+├── Program.cs         # App bootstrapping pipeline, service registration, and path endpoints map
+└── appsettings.json   # Environment variables containing local database connection string credentials
+```
+
+---
+
+## 🚀 Getting Started & Setup
+
+### Prerequisites
+* [.NET SDK 8.0](https://microsoft.com) (or newer)
+* Microsoft SQL Server / LocalDB instance (`Data source=(localdb)\api_part_1`)
+* IDE: Visual Studio 2022, VS Code, or JetBrains Rider
+
+### Relational Database Configuration
+1. Open your connection string parameters and verify alignment with your local database instance: `Data source=(localdb)\api_part_1;database=prog_part_ll;`.
+2. Ensure your local database schema tables (`Organiser`, `Participant`, `Events`, `Category`) match the exact relational script rules before starting the solution execution track.
+
+---
+
+## 🧪 Testing the API
+
+### 1. Interactive Runtime Mappings
+The application maps runtime endpoints cleanly, exposing access pathways transparently. If configured via development profiles, documentation schemas map to local browser endpoints at execution.
+
+### 2. Postman Collection Integration
+For seamless evaluation grading, REST request testing can be conducted using explicit JSON payload configurations:
+1. **Target Endpoints:** Configure requests to point to explicit controller paths such as `api/Login/login` or `api/Organiser/store-event`.
+2. **Body Definition:** Select `raw` and set the data type filter to `JSON` inside Postman.
+3. **Payload Structure:** Format data models to match your C# properties exactly, ensuring objects map matching keys across the HTTP network stream seamlessly:
+
+```json
+{
+  "Email": "thabethe@gmail.com",
+  "Password": "SecurePassword123"
+}
+```
+
+---
+
+## 📚 References & Background Documentation
+* **ASP.NET Core Framework:** Microsoft documentation for building high-performance cross-platform web APIs. [Microsoft ASP.NET Core Docs](https://microsoft.com).
+* **ADO.NET Data Client:** Framework documentation for executing direct parameterized commands securely on Microsoft SQL Server. [Microsoft Data SqlClient Docs](https://microsoft.com).
+
+# Race Day Event Management API (ASP.NET Core Web API)
+
+## 📖 Overview
 This project is a robust **C# ASP.NET Core Web API** designed for managing sporting events, participants, and organisers. Built to satisfy the rigorous criteria of our course assignment, the system features role-based access control (RBAC), complex event enrolment workflows, database transactional integrity, and automated results tracking. 
 
 The architecture adheres strictly to RESTful design principles and clean architectural patterns, utilizing Data Transfer Objects (DTOs) to prevent over-posting vulnerabilities and decouple the persistence layer from the client interface.
