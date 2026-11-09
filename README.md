@@ -1,4 +1,4 @@
-# Race Day Event Management API (ASP.NET Core Web API)
+# Race Day Event Management API MVC (ASP.NET Core Web API)
 
 ## 📖 Overview
 This project is a robust **C# ASP.NET Core Web API** designed for managing sporting events, participants, and organisers. Built to satisfy the rigorous criteria of our course assignment, the system features role-based access control (RBAC), complex event enrolment workflows, database transactional integrity, and automated results tracking.
