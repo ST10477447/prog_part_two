@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "..\\..\\PROG 6212\\prog_part_two\\progPartTwoWeb\\progPartTwoWeb.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "..\\..\\PROG 6212\\prog_part_two\\prog_part_two\\prog_part_two.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]
