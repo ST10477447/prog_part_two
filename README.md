@@ -1,13 +1,13 @@
 # Race Day Event Management API MVC (ASP.NET Core Web API)
 
-## 📖 Overview
+## Overview
 This project is a robust **C# ASP.NET Core Web API** designed for managing sporting events, participants, and organisers. Built to satisfy the rigorous criteria of our course assignment, the system features role-based access control (RBAC), complex event enrolment workflows, database transactional integrity, and automated results tracking.
 
 The architecture adheres strictly to RESTful design principles and clean architectural patterns, utilizing native Data Models and parameter serialization objects to prevent validation breakdowns and decouple the persistence layer from the client interface.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 * **Framework:** .NET 8.0 / 9.0 (ASP.NET Core Web API)
 * **Database & ORM:** Microsoft SQL Server using native **ADO.NET (`SqlConnection`, `SqlCommand`)** raw parameter query execution paths
 * **Security:** Native secure session caching tracking structures with cryptographic **BCrypt.Net** password hashing algorithms
@@ -16,9 +16,9 @@ The architecture adheres strictly to RESTful design principles and clean archite
 
 ---
 
-## ⚙️ Functional Requirements
+## Functional Requirements
 
-### 1. 🔑 Authentication & Authorization
+### 1. Authentication & Authorization
 Secured via a unified pipeline processing structured data envelopes. Access pathways evaluate the explicit string metadata fields passed back from sequential database checks to determine tracking roles: `Organiser` or `Participant`.
 
 * **`POST /api/Login/login`** -> Verifies organiser parameters against cryptographic password hashes using an implicit work factor configuration.
@@ -32,7 +32,7 @@ public IActionResult Logins([FromBody] LoginModel model)
 public IActionResult ParticipantLogin([FromBody] LoginModel model) 
 ```
 
-### 2. 👤 User Profile Management
+### 2. User Profile Management
 Authenticated users can manage their personal profiles, mapping to data layouts like names, unique contact numbers, and emails.
 
 * **`POST /api/Organiser/register-organiser`** -> Commits a newly registered organiser profile containing tracking columns like company organisation details into the repository framework.
@@ -42,7 +42,7 @@ Authenticated users can manage their personal profiles, mapping to data layouts 
 public async Task<IActionResult> store_organiserInfo([FromBody] prog_part_two.Models.Organisers model) 
 ```
 
-### 3. 🎉 Event Management
+### 3. Event Management
 Allows creation and tracking of multiple physical events using parameterized insertion routines to map data directly onto target schema columns.
 * **Organisers:** Complete execution authority to publish, adjust, or completely delete race entries from the catalog.
 * **Participants:** Unified search exploration triggers to view available public race indexes.
@@ -56,7 +56,7 @@ public async Task<IActionResult> StoreEvent([FromBody] prog_part_two.Models.Even
 public IActionResult GetEventCategories() 
 ```
 
-### 4. 🏷️ Category Management
+### 4. Category Management
 Organisers configure standalone classification tracks or division groups inside the storage structures to map upcoming race boundaries. Both roles can view active categories.
 
 ```csharp
@@ -64,7 +64,7 @@ Organisers configure standalone classification tracks or division groups inside 
 public async Task<IActionResult> StoreCategoryOnly([FromBody] prog_part_two.Models.Category model) 
 ```
 
-### 5. 📝 Event Enrolments
+### 5. Event Enrolments
 Participants register for events by mapping individual account records to target race configurations, linking explicit identity bridges across separate table indices.
 
 ```csharp
@@ -72,12 +72,12 @@ Participants register for events by mapping individual account records to target
 public IActionResult StoreParticipantInfo(string name, string email, int organiserId) 
 ```
 
-### 6. 🏆 Results Processing
+### 6. Results Processing
 Organisers handle operational scoring parameters, allowing execution gates to publish runner completion durations, placement lists, and leaderboard track positions safely. Participants can securely pull their historical scoreboards.
 
 ---
 
-## 🛡️ Assignment Business Logic & Validation Rules
+## Assignment Business Logic & Validation Rules
 
 To prevent data corruption and enforce domain rules, the API implements strict business validation checking directly inside the core controller action gates:
 
@@ -85,7 +85,7 @@ To prevent data corruption and enforce domain rules, the API implements strict b
 * **Password Length Rules:** Access codes are evaluated stringently against size rules to maintain algorithmic security integrity. Organiser registration passwords must be at least 8 characters long, while participant passwords must exceed 6 characters.
 * **Input Sanitization:** Character fields enforce exact truncation guardrails mirroring database allocation parameters. The system automatically restricts `EventName` and `EventType` to 15 characters, `Distance` to 5 characters, and venue metadata coordinates to 50 characters maximum.
 
-### 🛑 Global Error Handling
+### Global Error Handling
 The application uses structured try-catch execution blocks wrapping code pathways to intercept server faults gracefully. Instead of leaking raw connection metadata or internal file paths to the client, it captures database exceptions and maps them to clean, parameterized tracking structures:
 
 ```json
@@ -98,18 +98,18 @@ The application uses structured try-catch execution blocks wrapping code pathway
 
 ---
 
-## 🗄️ Database & Seed Data
+## Database & Seed Data
 
 The project leverages **Microsoft SQL Server** as the persistent storage engine, processing transactions through local data instances (`(localdb)\api_part_1`) targeting the database file catalog schema `prog_part_ll`.
 
-### 🌱 Data Seeding
+### Data Seeding
 Upon initialization within your environment configuration, the local database table architecture requires the direct manual initialization or registration of base structural roles to fulfill evaluation tests:
 * **Default Organiser Account:** Registered using valid `@gmail.com` parameters paired with an enterprise-grade BCrypt hashed tracking key string.
 * **Table Constraint Safety:** The `Events` relational structure enforces strict identity mappings, deploying fallback null parameters across foreign key indices (`OrganiserId`, `ParticipantId`, `CategoryId`) to preserve table structural normalization.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 The project follows standard ASP.NET Core architectural layouts to enforce clean separation of concerns:
 
 ```text
@@ -124,7 +124,7 @@ prog_part_two/
 
 ---
 
-## 🚀 Getting Started & Setup
+## Getting Started & Setup
 
 ### Prerequisites
 * [.NET SDK 8.0](https://microsoft.com) (or newer)
@@ -137,7 +137,7 @@ prog_part_two/
 
 ---
 
-## 🧪 Testing the API
+## Testing the API
 
 ### 1. Interactive Runtime Mappings
 The application maps runtime endpoints cleanly, exposing access pathways transparently. If configured via development profiles, documentation schemas map to local browser endpoints at execution.
@@ -157,20 +157,20 @@ For seamless evaluation grading, REST request testing can be conducted using exp
 
 ---
 
-## 📚 References & Background Documentation
+## References & Background Documentation
 * **ASP.NET Core Framework:** Microsoft documentation for building high-performance cross-platform web APIs. [Microsoft ASP.NET Core Docs](https://microsoft.com).
 * **ADO.NET Data Client:** Framework documentation for executing direct parameterized commands securely on Microsoft SQL Server. [Microsoft Data SqlClient Docs](https://microsoft.com).
 
 # Race Day Event Management API (ASP.NET Core Web API)
 
-## 📖 Overview
+## Overview
 This project is a robust **C# ASP.NET Core Web API** designed for managing sporting events, participants, and organisers. Built to satisfy the rigorous criteria of our course assignment, the system features role-based access control (RBAC), complex event enrolment workflows, database transactional integrity, and automated results tracking. 
 
 The architecture adheres strictly to RESTful design principles and clean architectural patterns, utilizing Data Transfer Objects (DTOs) to prevent over-posting vulnerabilities and decouple the persistence layer from the client interface.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 * **Framework:** .NET 8.0 / 9.0 (ASP.NET Core Web API)
 * **Database & ORM:** Microsoft SQL Server with Entity Framework (EF) Core
 * **Security:** JSON Web Tokens (JWT) with Role-Based Authorization Policies
@@ -179,9 +179,9 @@ The architecture adheres strictly to RESTful design principles and clean archite
 
 ---
 
-## ⚙️ Functional Requirements
+## Functional Requirements
 
-### 1. 🔑 Authentication & Authorization
+### 1. Authentication & Authorization
 Secured via JWT bearer tokens. Users are granted specific access levels depending on their registration role: `Organiser` or `Participant`.
 
 * **`POST /api/auth/register`** -> Registers a new user with a designated role.
@@ -195,7 +195,7 @@ public async Task<IActionResult> Register([FromBody] UserDto user)
 public async Task<IActionResult> Login([FromBody] LoginDto login) 
 ```
 
-### 2. 👤 User Profile Management
+### 2. User Profile Management
 Authenticated users can manage their personal profiles.
 
 * **`GET /api/profile`** -> Fetches profile details for the currently logged-in user.
@@ -207,7 +207,7 @@ Authenticated users can manage their personal profiles.
 public async Task<IActionResult> GetProfile() 
 ```
 
-### 3. 🎉 Event Management
+### 3. Event Management
 Allows creation and tracking of multiple physical events.
 * **Organisers:** Full CRUD permissions (Create, Read, Update, Delete).
 * **Participants:** Read-only access (Read).
@@ -223,7 +223,7 @@ public async Task<IActionResult> CreateEvent([FromBody] EventDto eventDto)
 public async Task<IActionResult> GetEvents() 
 ```
 
-### 4. 🏷️ Category Management
+### 4. Category Management
 Organisers configure age brackets or target distances (e.g., *Under 20, Senior, 10km, 21km*) to structure the competitions. Both roles can view active categories.
 
 ```csharp
@@ -232,7 +232,7 @@ Organisers configure age brackets or target distances (e.g., *Under 20, Senior, 
 public async Task<IActionResult> AddCategory([FromBody] CategoryDto category) 
 ```
 
-### 5. 📝 Event Enrolments
+### 5. Event Enrolments
 Participants register for events by selecting a specific category. The system maps the explicit relational bond between the `Participant`, `Event`, and `Category`. Organisers retain full oversight of enrollment lists.
 
 ```csharp
@@ -241,7 +241,7 @@ Participants register for events by selecting a specific category. The system ma
 public async Task<IActionResult> Enrol([FromBody] EnrolmentDto enrolment) 
 ```
 
-### 6. 🏆 Results Processing
+### 6. ?Results Processing
 Organisers capture metrics post-event to determine leaderboard status. Participants can securely pull their historical scoreboards.
 
 ```csharp
@@ -252,7 +252,7 @@ public async Task<IActionResult> RecordResult([FromBody] ResultDto result)
 
 ---
 
-## 🛡️ Assignment Business Logic & Validation Rules
+## Assignment Business Logic & Validation Rules
 
 To prevent data corruption and enforce domain rules, the API implements strict business validation using **FluentValidation** pipeline behaviors:
 
@@ -260,7 +260,7 @@ To prevent data corruption and enforce domain rules, the API implements strict b
 * **Unique Enrolments:** A unique constraint exists across `ParticipantId` and `EventId`. A participant cannot enrol in the same event more than once.
 * **Input Sanitization:** Event titles and names are restricted to a maximum length of 100 characters to prevent buffer overflow constraints or storage degradation.
 
-### 🛑 Global Error Handling
+### Global Error Handling
 The application uses a custom Global Exception Handling Middleware to intercept server faults gracefully. Instead of leaking internal stack traces to the client, it maps domain errors to RFC 7807 **Problem Details** compliant JSON structures:
 
 ```json
@@ -276,11 +276,11 @@ The application uses a custom Global Exception Handling Middleware to intercept 
 
 ---
 
-## 🗄️ Database & Seed Data
+## Database & Seed Data
 
 The project leverages **Microsoft SQL Server** as the persistent storage engine, configured via Entity Framework Core (`DbContext`).
 
-### 🌱 Data Seeding
+### Data Seeding
 Upon application startup within a development environment, the database context runs an automated data-seeder (`DbInitializer.cs`) ensuring the following structures are available for grading:
 * **Default Organiser Account:** `organiser@eventapi.com` (Password: `SecureP@ss123!`)
 * **Default Participant Account:** `participant@eventapi.com` (Password: `SecureP@ss123!`)
@@ -288,7 +288,7 @@ Upon application startup within a development environment, the database context 
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 The project follows standard ASP.NET Core architectural layouts to enforce clean separation of concerns:
 
 ```text
@@ -305,7 +305,7 @@ EventManagementAPI/
 
 ---
 
-## 🚀 Getting Started & Setup
+## Getting Started & Setup
 
 ### Prerequisites
 * [.NET SDK 8.0](https://microsoft.com) (or newer)
@@ -334,7 +334,7 @@ The application will bootstrap and expose endpoints locally at `https://localhos
 
 ---
 
-## 🧪 Testing the API
+## Testing the API
 
 ### 1. Interactive Swagger UI
 Navigate to `https://localhost:7001/swagger` in your browser to view the interactive documentation panel. 
@@ -347,7 +347,7 @@ A dedicated Postman collection file is exported inside the project root at `/tes
 
 ---
 
-## 📚 References & Background Documentation
+## References & Background Documentation
 * **ASP.NET Core Framework:** Microsoft documentation for building high-performance cross-platform web APIs. [Microsoft ASP.NET Core Docs](https://microsoft.com).
 * **Entity Framework Core:** Object-Relational Mapping framework documentation used for relational database modeling on SQL Server. [EF Core Documentation](https://microsoft.com).
 * **JWT Authentication:** Industry standards for implementing role-based authorization inside distributed client-server systems. [RFC 7519 Standards](https://ietf.org).
